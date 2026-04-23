@@ -8,18 +8,26 @@ TaskManager::TaskManager() {
 }
 
 bool TaskManager::isIdUnique(int id) {
-    Node<Task>* current = waitingTasks.pfirst;
-    while (current != NULL) {
-        if (current->info.id == id) return false;
-        current = current->next;
+    bool unique = true;
+
+    for (int i = 0; i < waitingNr; i++) {
+        Task t = waitingTasks.dequeue();
+        if (t.id == id) unique = false;
+        waitingTasks.enqueue(t);
     }
 
-    current = processedTasks.pfirst;
-    while (current != NULL) {
-        if (current->info.id == id) return false;
-        current = current->next;
+    Source_Stack<Task> tempStack;
+    while (!processedTasks.isEmpty()) {
+        Task t = processedTasks.pop();
+        if (t.id == id) unique = false;
+        tempStack.push(t);
     }
-    return true;
+
+    while (!tempStack.isEmpty()) {
+        processedTasks.push(tempStack.pop());
+    }
+
+    return unique;
 }
 
 void TaskManager::addTask(int id, const string& desc, int priority) {
@@ -29,7 +37,7 @@ void TaskManager::addTask(int id, const string& desc, int priority) {
     }
 
     if (id < 0) {
-        cout << "Error: Task ID must be a positive integer";
+        cout << "Error: Task ID must be a positive integer.\n\n";
         return;
     }
 
@@ -39,46 +47,52 @@ void TaskManager::addTask(int id, const string& desc, int priority) {
     }
 
     Task newTask = { id, desc, priority };
-    waitingTasks.addLast(newTask);
+    waitingTasks.enqueue(newTask);
     waitingNr++;
 
     cout << "Task added successfully:\n";
     displayTask(newTask);
+    cout << "\n";
 }
 
 void TaskManager::processNextTask(bool silent) {
-    if (!waitingNr) {
+    if (waitingNr == 0) {
         if (!silent) cout << "No waiting tasks available to process.\n\n";
         return;
     }
 
-    Task task = waitingTasks.getInfo(waitingTasks.pfirst);
-    waitingTasks.removeFirst();
+    Task task = waitingTasks.dequeue();
     waitingNr--;
 
-    processedTasks.addFirst(task);
+    processedTasks.push(task);
     processedNr++;
 
     cout << "Processed task:\n";
     displayTask(task);
+    cout << "\n";
 }
 
 void TaskManager::undoLastProcessedTask() {
-    if (!processedNr) {
+    if (processedNr == 0) {
         cout << "No processed task available for undo.\n\n";
         return;
     }
 
-    Task task = processedTasks.getInfo(processedTasks.pfirst);
-    processedTasks.removeFirst();
+    Task task = processedTasks.pop();
     processedNr--;
 
-    waitingTasks.addFirst(task);
+    waitingTasks.enqueue(task);
+
+    for (int i = 0; i < waitingNr; i++) {
+        waitingTasks.enqueue(waitingTasks.dequeue());
+    }
+
     waitingNr++;
     undoNr++;
 
-    cout << "Undo successful. Task details:\n";
+    cout << "Undo successful. Restored task:\n";
     displayTask(task);
+    cout << "\n";
 }
 
 void TaskManager::displayWaitingTasks() {
@@ -88,10 +102,10 @@ void TaskManager::displayWaitingTasks() {
     }
 
     cout << "Waiting tasks:\n";
-    Node<Task>* current = waitingTasks.pfirst;
-    while (current != NULL) {
-        displayTask(current);
-        current = current->next;
+    for (int i = 0; i < waitingNr; i++) {
+        Task t = waitingTasks.dequeue();
+        displayTask(t);
+        waitingTasks.enqueue(t);
     }
     cout << "\n";
 }
@@ -103,54 +117,73 @@ void TaskManager::displayProcessedHistory() {
     }
 
     cout << "Processed task history:\n";
-    Node<Task>* current = processedTasks.pfirst;
-    while (current != NULL) {
-        displayTask(current);
-        current = current->next;
+    Source_Stack<Task> tempStack;
+
+    while (!processedTasks.isEmpty()) {
+        Task t = processedTasks.pop();
+        displayTask(t);
+        tempStack.push(t);
+    }
+
+    while (!tempStack.isEmpty()) {
+        processedTasks.push(tempStack.pop());
     }
     cout << "\n";
 }
 
 void TaskManager::processNextKTasks(int k) {
-    if (!waitingNr) {
+    if (waitingNr == 0) {
         cout << "No waiting tasks to process.\n\n";
         return;
     }
 
-    cout << "Requested to process " << k << " task(s).\n\n";
+    cout << "Requested to process " << k << " tasks.\n\n";
 
     while (k > 0 && waitingNr > 0) {
         processNextTask(true);
         k--;
     }
 
-    if (!waitingNr) {
+    if (waitingNr == 0) {
         cout << "No more waiting tasks.\n\n";
     }
 }
 
 void TaskManager::searchTaskById(int id) {
-    Node<Task>* current = waitingTasks.pfirst;
-    while (current != NULL) {
-        if (current->info.id == id) {
+    bool found = false;
+
+    for (int i = 0; i < waitingNr; i++) {
+        Task t = waitingTasks.dequeue();
+        if (t.id == id && !found) {
             cout << "Task found (Waiting):\n";
-            displayTask(current);
-            return;
+            displayTask(t);
+            cout << "\n";
+            found = true;
         }
-        current = current->next;
+        waitingTasks.enqueue(t);
     }
 
-    current = processedTasks.pfirst;
-    while (current != NULL) {
-        if (current->info.id == id) {
+    if (found) return;
+
+    Source_Stack<Task> tempStack;
+    while (!processedTasks.isEmpty()) {
+        Task t = processedTasks.pop();
+        if (t.id == id && !found) {
             cout << "Task found (Processed):\n";
-            displayTask(current);
-            return;
+            displayTask(t);
+            cout << "\n";
+            found = true;
         }
-        current = current->next;
+        tempStack.push(t);
     }
 
-    cout << "Task not found.\n\n";
+    while (!tempStack.isEmpty()) {
+        processedTasks.push(tempStack.pop());
+    }
+
+    if (!found) {
+        cout << "Task not found.\n\n";
+    }
 }
 
 void TaskManager::displayStats() {
@@ -160,12 +193,7 @@ void TaskManager::displayStats() {
     cout << "Successful undo operations: " << undoNr << "\n\n";
 }
 
-// Can use the same method name because the parameters are different
 // Also pass by reference to avoid creating a new copy of the Task struct every time displayTask is called
 void TaskManager::displayTask(const Task& task) {
-    cout << "ID: " << task.id << ", Description: " << task.description << ", Priority: " << task.priority << "\n\n";
-}
-
-void TaskManager::displayTask(Node<Task>* task) {
-    cout << "ID: " << task->info.id << ", Description: " << task->info.description << ", Priority: " << task->info.priority << "\n";
+    cout << "ID: " << task.id << ", Description: " << task.description << ", Priority: " << task.priority << "\n";
 }

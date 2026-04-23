@@ -2,7 +2,8 @@
 #define TASK_FLOW_MANAGER_H
 
 #include <string>
-#include "linked_list.h"
+#include "source_queue_circular.h"
+#include "source_stack.h"
 
 using std::string;
 
@@ -14,11 +15,12 @@ struct Task {
 
 class TaskManager {
     private:
-        LinkedList<Task> waitingTasks;
-        LinkedList<Task> processedTasks;
+        Queue_Circular<Task> waitingTasks;
+        Source_Stack<Task> processedTasks;
         int waitingNr;
         int processedNr;
         int undoNr;
+
         bool isIdUnique(int id);
 
     public:
@@ -32,7 +34,6 @@ class TaskManager {
         void searchTaskById(int id);
         void displayStats();
         void displayTask(const Task& task);
-        void displayTask(Node<Task>* task);
 };
 
 #endif
