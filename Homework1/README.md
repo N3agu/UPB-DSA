@@ -1,7 +1,3 @@
-<div align="center">
-  <h1>HOMEWORK 1</h1>
-</div>
-
 ## Overview
 The primary objective of this assignment was to utilize foundational Data Types: **Stacks, Queues, and Linked Lists** — using the custom headers provided by the course laboratory, **without the use of standard STL containers** (like `std::vector`, `std::queue`, or `std::list`). 
 
@@ -17,8 +13,8 @@ Your goal is to build an **interactive console application** that simulates this
 
 ### Data Structures Used
 To solve this, I used the lab-provided **Queue** and **Stack** implementations:
-* **'Queue_Circular' (Waiting Tasks):** Used to maintain the strict First-In-First-Out (FIFO) order of incoming tasks. A circular implementation was chosen to allow continuous enqueue/dequeue operations without hitting a hard array limit.
-* **'Source_Stack' (Processed Tasks):** Used to maintain a Last-In-First-Out (LIFO) history of processed tasks. This perfectly matches the requirement for the "Undo" feature, allowing the most recently processed task to be popped off the stack and restored.
+* **[Queue_Circular](https://github.com/N3agu/UPB-DSA/blob/main/Homework1/source_queue_circular.h) (Waiting Tasks):** Used to maintain the strict First-In-First-Out (FIFO) order of incoming tasks. A circular implementation was chosen to allow continuous enqueue/dequeue operations without hitting a hard array limit.
+* **[Source_Stack](https://github.com/N3agu/UPB-DSA/blob/main/Homework1/source_stack.h) (Processed Tasks):** Used to maintain a Last-In-First-Out (LIFO) history of processed tasks. This perfectly matches the requirement for the "Undo" feature, allowing the most recently processed task to be popped off the stack and restored.
 
 ### Features
 * **Add / Process Tasks:** Add new tasks with unique IDs and priorities. Process the next task in line.
@@ -34,7 +30,7 @@ To fix these anomalies, a system called the Timeline Reconstruction Engine was d
 You are asked to implement a **TimelineManager** class that manages this chronology and allows for its modification.
 
 ### Data Structures Used
-To solve this, I used the lab-provided **Doubly Linked List** (`LinkedList`):
+To solve this, I used the lab-provided **Double Linked List** ([LinkedList](https://github.com/N3agu/UPB-DSA/blob/main/Homework1/linked_list.h)):
 * Since the timeline requires constant manipulation in the middle of the sequence (inserting events between other events, relocating events, erasing specific corrupted events), Stack and Queue structures are inefficient.
 
 ### Features
@@ -47,5 +43,5 @@ To solve this, I used the lab-provided **Doubly Linked List** (`LinkedList`):
 Compilation was done using Visual Studio 2022, the [.sln](https://github.com/N3agu/UPB-DSA/blob/main/Homework1/Homework1.sln) file is provided.
 
 ## Documentation
-[Cppreference](https://en.cppreference.com/) & [cplusplus](https://cplusplus.com/) - used for syntax 
-[Gemini](https://gemini.google.com/) - used for writing README.md (fix grammar mistakes and explain features), validating ideas and explaining concepts.
+- [Cppreference](https://en.cppreference.com/) & [cplusplus](https://cplusplus.com/) - used for syntax
+- [Gemini](https://gemini.google.com/) - used for writing README.md (fix grammar mistakes and explain features), validating ideas and explaining concepts.
