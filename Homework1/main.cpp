@@ -66,8 +66,86 @@ int runMenu(const string options[], int numOptions, const string& title) {
     return 0;
 }
 
+void runExercise1() {
+    clearScreen();
+    cout << "STORY: Interactive Task Flow Manager\n\n";
+    cout << "A student team is preparing a university event.\n";
+    cout << "Tasks arrive one by one and must be handled in order.\n";
+    cout << "However, mistakes can happen. If a task was processed by accident,\n";
+    cout << "the team wants the possibility to undo the most recently processed task.\n\n";
+    cout << "Press ENTER to continue to the exercise 1 menu...";
+
+    // ENTER key
+    while (_getch() != 13) {}
+
+    TaskManager manager;
+
+    const int numOptions = 9;
+    string menuOptions[numOptions] = {
+        "1. Add new task",
+        "2. Process next task",
+        "3. Undo last processed task",
+        "4. Display waiting tasks",
+        "5. Display processed task history",
+        "6. Process next k tasks",
+        "7. Search task by id",
+        "8. Display statistics",
+        "0. Exit"
+    };
+
+    bool exitEx1 = false;
+    while (!exitEx1) {
+        int choice = runMenu(menuOptions, numOptions, "======= EXERCISE 1 MENU =======");
+        clearScreen();
+
+        switch (choice) {
+        case 0: {
+            int id, priority;
+            string desc;
+            cout << "Enter Task ID: ";
+            cin >> id;
+            cout << "Enter Description: ";
+            cin >> ws;
+            getline(cin, desc);
+            cout << "Enter Priority (1-5): ";
+            cin >> priority;
+            manager.addTask(id, desc, priority);
+            break;
+        }
+        case 1: manager.processNextTask(); break;
+        case 2: manager.undoLastProcessedTask(); break;
+        case 3: manager.displayWaitingTasks(); break;
+        case 4: manager.displayProcessedHistory(); break;
+        case 5: {
+            int k;
+            cout << "Enter number of tasks to process: ";
+            cin >> k;
+            manager.processNextKTasks(k);
+            break;
+        }
+        case 6: {
+            int id;
+            cout << "Enter Task ID to search: ";
+            cin >> id;
+            manager.searchTaskById(id);
+            break;
+        }
+        case 7: manager.displayStats(); break;
+        case 8:
+            cout << "Exiting Exercise 1...\n";
+            exitEx1 = true;
+            break;
+        }
+
+        if (!exitEx1) {
+            cout << "Press any key to return to exercise 1 menu...";
+            _getch();
+        }
+    }
+}
+
 int main() {
-    const int numOptions = 3;
+    const int numOptions = 4;
     string mainOptions[numOptions] = {
         "Exercise 1: Interactive Task Flow Manager",
         "Exercise 2: Timeline Reconstruction System",
@@ -80,10 +158,10 @@ int main() {
 
         switch (choice) {
         case 0:
-            //runExercise1();
+            runExercise1();
             break;
         case 1:
-            //runExercise1();
+            //runExercise2();
             break;
         case 2:
             cout << "\nExiting...\n";
