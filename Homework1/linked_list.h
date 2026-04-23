@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-using namespace std;
+using std::cout;
 
 //doubly linked list
 
@@ -88,7 +88,7 @@ class LinkedList
                 pfirst->prev = NULL;
         }
         else
-            cout<<"The list is empty"<<endl;
+            cout<<"The list is empty\n";
     }
 
     void removeLast()
@@ -110,7 +110,7 @@ class LinkedList
                 plast->next = NULL;
         }
         else
-            cout<<"The list is empty"<<endl;
+            cout<<"The list is empty\n";
     }
 
     Node <T>* findFirstOccurrence(T x)

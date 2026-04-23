@@ -3,7 +3,6 @@
 
 #include <iostream>
 #define NMAX 50
-using namespace std;
 
 template <typename T>
 class Source_Stack {

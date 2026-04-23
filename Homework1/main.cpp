@@ -6,6 +6,7 @@
 #include "timeline_manager.h"
 
 using std::cout;
+using std::cin;
 
 void printBanner() {
     cout << R"(  _   _  ___  __  __ _______        _____  ____  _  __  _ 
@@ -105,9 +106,11 @@ void runExercise1() {
             string desc;
             cout << "Enter Task ID: ";
             cin >> id;
+            
             cout << "Enter Description: ";
-            cin >> ws;
+            cin >> std::ws; // "Discards leading whitespace from an input stream." - https://en.cppreference.com/cpp/io/manip/ws
             getline(cin, desc);
+
             cout << "Enter Priority (1-5): ";
             cin >> priority;
             manager.addTask(id, desc, priority);
@@ -157,58 +160,161 @@ void runExercise1() {
     }
 }
 
-int main() {
-    //const int numOptions = 4;
-    //string mainOptions[numOptions] = {
-    //    "Exercise 1: Interactive Task Flow Manager",
-    //    "Exercise 2: Timeline Reconstruction System",
-    //    "Exit Program"
-    //};
+void runExercise2() {
+    clearScreen();
+    cout << "STORY: Timeline Reconstruction System\n\n";
+    cout << "In the year 2473, researchers discovered that the timeline had been affected\n";
+    cout << "by multiple uncontrolled interventions. Some events had been moved to the\n";
+    cout << "wrong time, others had been completely eliminated, and some had been\n";
+    cout << "artificially inserted into other periods.\n\n";
+    cout << "To fix these anomalies, you must manage the Timeline Reconstruction Engine.\n\n";
+    cout << "Press ENTER to continue to the exercise 2 menu...";
 
-    //bool exitProgram = false;
-    //while (!exitProgram) {
-    //    int choice = runMenu(mainOptions, numOptions, "======= MAIN MENU =======");
-
-    //    switch (choice) {
-    //    case 0:
-    //        runExercise1();
-    //        break;
-    //    case 1:
-    //        //runExercise2();
-    //        break;
-    //    case 2:
-    //        cout << "\nExiting...\n";
-    //        exitProgram = true;
-    //        break;
-    //    }
-    //}
+    // ENTER Key
+    while (_getch() != 13) {}
 
     TimelineManager manager;
+    const int numOptions = 9;
+    string menuOptions[numOptions] = {
+        "1. Record Ancient Event",
+        "2. Record Recent Event",
+        "3. Insert Event Between",
+        "4. Erase Corrupted Event",
+        "5. Relocate Event",
+        "6. Display Chronology",
+        "7. Compute Total Impact",
+        "8. Stabilize Timeline",
+        "0. Return to Main Menu"
+    };
 
-    manager.recordRecentEvent({ 1, "test1", 2332, 23 });
-    manager.recordRecentEvent({ 2, "test2", 2423, 43 });
-    manager.recordAncientEvent({ 0, "test3", 4354, 100 });
+    bool exitEx2 = false;
+    while (!exitEx2) {
+        int choice = runMenu(menuOptions, numOptions, "======= EXERCISE 2 MENU =======");
+        clearScreen();
 
-    manager.displayChronology();
+        switch (choice) {
+        case 0:
+        case 1: {
+            int id, year, impact;
+            string desc;
+            cout << "Enter Event ID: ";
+            cin >> id;
+            
+            cout << "Enter Description: ";
+            cin >> std::ws;
+            getline(cin, desc);
+            
+            cout << "Enter Year: ";
+            cin >> year;
+            
+            cout << "Enter Impact: ";
+            cin >> impact;
 
-    manager.insertEventBetween(1, 2, { 3, "test4", 1235, 95 });
+            Event e = { id, desc, year, impact };
+            if (choice == 0) manager.recordAncientEvent(e);
+            else manager.recordRecentEvent(e);
 
-    manager.displayChronology();
+            cout << "Event recorded successfully.\n\n";
+            break;
+        }
+        case 2: {
+            int leftId, rightId, id, year, impact;
+            string desc;
+            cout << "Enter Left Neighbor ID: ";
+            cin >> leftId;
+            
+            cout << "Enter Right Neighbor ID: ";
+            cin >> rightId;
+            
+            cout << "\n--- New Event Details ---\n";
+            cout << "Enter Event ID: ";
+            cin >> id;
+            
+            cout << "Enter Description: ";
+            cin >> std::ws;
+            getline(cin, desc);
+            
+            cout << "Enter Year: ";
+            cin >> year;
+            
+            cout << "Enter Impact: ";
+            cin >> impact;
 
-    manager.relocateEvent(3, 0, true);
+            manager.insertEventBetween(leftId, rightId, { id, desc, year, impact });
+            break;
+        }
+        case 3: {
+            int id;
+            cout << "Enter Event ID to erase: ";
+            cin >> id;
+            manager.eraseCorruptedEvent(id);
+            break;
+        }
+        case 4: {
+            int idToMove, newNeighborId, beforeChoice;
+            cout << "Enter ID of the Event to move: ";
+            cin >> idToMove;
+            
+            cout << "Enter ID of the Target Neighbor: ";
+            cin >> newNeighborId;
+            
+            cout << "Place before target? (1 for Yes, 0 for No): ";
+            cin >> beforeChoice;
 
-    manager.displayChronology();
+            manager.relocateEvent(idToMove, newNeighborId, beforeChoice == 1);
+            break;
+        }
+        case 5:
+            manager.displayChronology();
+            break;
+        case 6:
+            cout << "Total Impact: " << manager.computeTotalImpact() << "\n\n";
+            break;
+        case 7: {
+            int threshold;
+            cout << "Enter stabilization threshold: ";
+            cin >> threshold;
+            manager.stabilizeTimeline(threshold);
+            break;
+        }
+        case 8:
+            cout << "Exiting Exercise 2...\n";
+            exitEx2 = true;
+            break;
+        }
 
-    manager.eraseCorruptedEvent(1);
+        if (!exitEx2) {
+            cout << "Press any key to continue...";
+            _getch();
+        }
+    }
+}
 
-    manager.displayChronology();
+int main() {
+    const int numOptions = 4;
+    string mainOptions[numOptions] = {
+        "Exercise 1: Interactive Task Flow Manager",
+        "Exercise 2: Timeline Reconstruction System",
+        "Exit Program"
+    };
 
-    int impact = manager.computeTotalImpact();
-    cout << "total impact: " << impact << "\n\n";
+    bool exitProgram = false;
+    while (!exitProgram) {
+        int choice = runMenu(mainOptions, numOptions, "======= MAIN MENU =======");
 
-    manager.stabilizeTimeline(80);
-
-    manager.displayChronology();
+        switch (choice) {
+        case 0:
+            runExercise1();
+            break;
+        case 1:
+            runExercise2();
+            break;
+        case 2:
+            cout << "\nExiting...\n";
+            exitProgram = true;
+            break;
+        }
+    }
 
     return 0;
 }
