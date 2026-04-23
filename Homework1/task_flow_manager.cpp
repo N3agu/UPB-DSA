@@ -1,7 +1,7 @@
 #include "task_flow_manager.h"
 #include <iostream>
 
-using namespace std;
+using std::cout;
 
 TaskManager::TaskManager() {
     waitingNr = processedNr = undoNr = 0;

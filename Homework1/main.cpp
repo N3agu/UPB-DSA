@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <stdlib.h>
 #include "task_flow_manager.h"
+#include "timeline_manager.h"
 
 using std::cout;
 
@@ -112,10 +113,22 @@ void runExercise1() {
             manager.addTask(id, desc, priority);
             break;
         }
-        case 1: manager.processNextTask(); break;
-        case 2: manager.undoLastProcessedTask(); break;
-        case 3: manager.displayWaitingTasks(); break;
-        case 4: manager.displayProcessedHistory(); break;
+        case 1: {
+            manager.processNextTask();
+            break;
+        }
+        case 2: {
+            manager.undoLastProcessedTask();
+            break;
+        }
+        case 3: {
+            manager.displayWaitingTasks();
+            break;
+        }
+        case 4: {
+            manager.displayProcessedHistory();
+            break;
+        }
         case 5: {
             int k;
             cout << "Enter number of tasks to process: ";
@@ -145,30 +158,57 @@ void runExercise1() {
 }
 
 int main() {
-    const int numOptions = 4;
-    string mainOptions[numOptions] = {
-        "Exercise 1: Interactive Task Flow Manager",
-        "Exercise 2: Timeline Reconstruction System",
-        "Exit Program"
-    };
+    //const int numOptions = 4;
+    //string mainOptions[numOptions] = {
+    //    "Exercise 1: Interactive Task Flow Manager",
+    //    "Exercise 2: Timeline Reconstruction System",
+    //    "Exit Program"
+    //};
 
-    bool exitProgram = false;
-    while (!exitProgram) {
-        int choice = runMenu(mainOptions, numOptions, "======= MAIN MENU =======");
+    //bool exitProgram = false;
+    //while (!exitProgram) {
+    //    int choice = runMenu(mainOptions, numOptions, "======= MAIN MENU =======");
 
-        switch (choice) {
-        case 0:
-            runExercise1();
-            break;
-        case 1:
-            //runExercise2();
-            break;
-        case 2:
-            cout << "\nExiting...\n";
-            exitProgram = true;
-            break;
-        }
-    }
+    //    switch (choice) {
+    //    case 0:
+    //        runExercise1();
+    //        break;
+    //    case 1:
+    //        //runExercise2();
+    //        break;
+    //    case 2:
+    //        cout << "\nExiting...\n";
+    //        exitProgram = true;
+    //        break;
+    //    }
+    //}
+
+    TimelineManager manager;
+
+    manager.recordRecentEvent({ 1, "test1", 2332, 23 });
+    manager.recordRecentEvent({ 2, "test2", 2423, 43 });
+    manager.recordAncientEvent({ 0, "test3", 4354, 100 });
+
+    manager.displayChronology();
+
+    manager.insertEventBetween(1, 2, { 3, "test4", 1235, 95 });
+
+    manager.displayChronology();
+
+    manager.relocateEvent(3, 0, true);
+
+    manager.displayChronology();
+
+    manager.eraseCorruptedEvent(1);
+
+    manager.displayChronology();
+
+    int impact = manager.computeTotalImpact();
+    cout << "total impact: " << impact << "\n\n";
+
+    manager.stabilizeTimeline(80);
+
+    manager.displayChronology();
 
     return 0;
 }

@@ -4,9 +4,11 @@
 #include <string>
 #include "linked_list.h"
 
+using std::string;
+
 struct Task {
     int id;
-    std::string description;
+    string description;
     int priority;
 };
 

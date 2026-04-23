@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="task_flow_manager.cpp" />
+    <ClCompile Include="timeline_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linked_list.h" />
@@ -132,6 +133,7 @@
     <ClInclude Include="source_queue_circular.h" />
     <ClInclude Include="source_stack.h" />
     <ClInclude Include="task_flow_manager.h" />
+    <ClInclude Include="timeline_manager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
