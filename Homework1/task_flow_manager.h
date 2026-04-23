@@ -28,7 +28,7 @@ class TaskManager {
         void displayProcessedHistory();
         void processNextKTasks(int k);
         void searchTaskById(int id);
-        void displayStatistics();
+        void displayStats();
         void displayTask(const Task& task);
         void displayTask(Node<Task>* task);
 };
