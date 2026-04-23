@@ -48,5 +48,4 @@ public:
 
 };
 
-
-#endif //SOURCE_STACK_H
+#endif

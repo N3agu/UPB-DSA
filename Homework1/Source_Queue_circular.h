@@ -1,8 +1,8 @@
+#ifndef SOURCE_QUEUE_CIRCULAR_H
+#define SOURCE_QUEUE_CIRCULAR_H
+
 #include <iostream>
 #include <stdexcept>
-
-#ifndef IMPLEMENTATION_SOURCE_QUEUE_CIRCULAR_H
-#define IMPLEMENTATION_SOURCE_QUEUE_CIRCULAR_H
 
 #define NMAX 5
 template<typename T> class Queue_Circular {
@@ -47,6 +47,4 @@ public:
     }
 };
 
-
-
-#endif //IMPLEMENTATION_SOURCE_QUEUE_CIRCULAR_H
+#endif

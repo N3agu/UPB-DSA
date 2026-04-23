@@ -1,9 +1,7 @@
+#ifndef SOURCE_QUEUE_H
+#define SOURCE_QUEUE_H
+
 #include <stdexcept>
-
-
-#ifndef IMPLEMENTATION_SOURCE_QUEUE_H
-#define IMPLEMENTATION_SOURCE_QUEUE_H
-
 
 #define NMAX 100
 template<typename T> class Queue {
@@ -47,8 +45,4 @@ public:
     }
 };
 
-
-
-
-
-#endif //IMPLEMENTATION_SOURCE_QUEUE_H
+#endif
