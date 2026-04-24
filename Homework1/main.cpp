@@ -291,7 +291,7 @@ void runExercise2() {
 }
 
 int main() {
-    const int numOptions = 4;
+    const int numOptions = 3;
     string mainOptions[numOptions] = {
         "Exercise 1: Interactive Task Flow Manager",
         "Exercise 2: Timeline Reconstruction System",

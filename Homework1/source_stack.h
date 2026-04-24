@@ -4,6 +4,8 @@
 #include <iostream>
 #define NMAX 50
 
+using std::cout;
+
 template <typename T>
 class Source_Stack {
 private:
@@ -20,7 +22,7 @@ public:
 
     void push(T item) {
         if (topLevel==NMAX-1) {
-            cout<<"Stack is overflow"<<endl;
+            cout<<"Stack is overflow\n";
             return;
         }
         stackArray[++topLevel] = item;
@@ -28,7 +30,7 @@ public:
 
     T pop() {
         if(isEmpty()) {
-            cout<<"Stack is empty"<<endl;
+            cout<<"Stack is empty\n";
             return T();
         }
         return stackArray[topLevel--];
@@ -36,7 +38,7 @@ public:
 
     T peek() {
         if(isEmpty()) {
-            cout<<"Stack is empty"<<endl;
+            cout<<"Stack is empty\n";
             return T();
         }
         return stackArray[topLevel];
