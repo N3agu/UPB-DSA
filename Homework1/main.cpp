@@ -92,7 +92,7 @@ void runExercise1() {
         "6. Process next k tasks",
         "7. Search task by id",
         "8. Display statistics",
-        "0. Exit"
+        "0. Return to Main Menu"
     };
 
     bool exitEx1 = false;
