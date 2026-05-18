@@ -18,9 +18,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="urban_network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="binarytree.h">
+    <ClInclude Include="binary_tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="graph.h">
@@ -30,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="urban_network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

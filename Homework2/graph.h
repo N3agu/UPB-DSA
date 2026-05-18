@@ -50,21 +50,25 @@ public:
     }
 
     void removeEdge(int i, int j) {
-        struct list_elem<struct list_elem_info<TedgeInfo> >* p;
+        Node<struct list_elem_info<TedgeInfo> >* p;
 
         p = L[i].pfirst;
         while (p != NULL) {
-            if (p->info.node == j) break;
+            if (p->info.node == j) {
+                L[i].removeNode(p);
+                break;
+            }
             p = p->next;
         }
-        L[i].removeNode(p);
 
         p = L[j].pfirst;
         while (p != NULL) {
-            if (p->info.node == i) break;
+            if (p->info.node == i) {
+                L[j].removeNode(p);
+                break;
+            }
             p = p->next;
         }
-        L[j].removeNode(p);
     }
 
     void removeDirectedEdge(int from, int to) {
@@ -81,7 +85,7 @@ public:
     }
 
     void setEdgeInfo(int i, int j, TedgeInfo info) {
-        struct list_elem<struct list_elem_info<TedgeInfo> >* p;
+        Node<struct list_elem_info<TedgeInfo> >* p;
         p = L[i].pfirst;
         while (p != NULL) {
             if (p->info.node == j) {
@@ -93,7 +97,7 @@ public:
     }
 
     TedgeInfo getEdgeInfo(int i, int j) {
-        struct list_elem<struct list_elem_info<TedgeInfo> >* p;
+        Node<struct list_elem_info<TedgeInfo> >* p;
         p = L[i].pfirst;
         while (p != NULL) {
             if (p->info.node == j)

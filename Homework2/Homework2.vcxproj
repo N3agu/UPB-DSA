@@ -124,12 +124,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="urban_network.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="binarytree.h" />
+    <ClInclude Include="binary_tree.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="linked_list.h" />
     <ClInclude Include="queue.h" />
+    <ClInclude Include="urban_network.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
