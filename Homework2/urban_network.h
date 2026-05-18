@@ -39,6 +39,7 @@ private:
     void generateGraphviz();
     void findMostExposedArea();
     void checkNetworkValidity();
+    void findBlockedAreas();
 
 public:
     UrbanNetwork();

@@ -183,9 +183,41 @@ void UrbanNetwork::generateGraphviz() {
     cout << "Navigate to https://dreampuf.github.io/GraphvizOnline/ and upload the '.dot' file to get the visual representation.\n";
 }
 
+void UrbanNetwork::findBlockedAreas() {
+    vector<int> inDegree(N, 0);
+    vector<int> outDegree(N, 0);
+
+    for (int i = 0; i < N; ++i) {
+        Node<list_elem_info<Road>>* p = g->L[i].pfirst;
+        while (p != NULL) {
+            outDegree[i]++;
+            inDegree[p->info.node]++;
+            p = p->next;
+        }
+    }
+
+    vector<string> blockedAreas;
+    for (int i = 0; i < N; ++i) {
+        if (inDegree[i] > 0 && outDegree[i] == 0) {
+            blockedAreas.push_back(indexToArea[i]);
+        }
+    }
+
+    cout << "Blocked areas:\n";
+    if (blockedAreas.empty()) {
+        cout << "No blocked areas detected.\n";
+    }
+    else {
+        for (size_t i = 0; i < blockedAreas.size(); ++i) {
+            cout << blockedAreas[i] << "\n";
+        }
+    }
+}
+
 void UrbanNetwork::solve() {
     mapNetwork();
     generateGraphviz();
     findMostExposedArea();
     checkNetworkValidity();
+    findBlockedAreas();
 }
