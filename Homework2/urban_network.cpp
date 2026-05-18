@@ -299,7 +299,7 @@ void UrbanNetwork::calculateRobotPaths() {
     }
 
     for (size_t i = 0; i < robots.size(); ++i) {
-        cout << "Robot " << i + 1 << ":\n";
+        cout << "\nRobot " << i + 1 << ":\n";
         cout << "Initial position: " << robots[i].start << "\n";
         cout << "Autonomy: " << robots[i].autonomy << "\n";
         cout << "Maximum accepted risk: " << robots[i].maxRisk << "\n";

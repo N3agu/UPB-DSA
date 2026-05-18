@@ -21,6 +21,9 @@
     <ClCompile Include="urban_network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="royal_chronicle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binary_tree.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="urban_network.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="royal_chronicle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

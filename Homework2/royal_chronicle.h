@@ -1,0 +1,55 @@
+#ifndef ROYAL_CHRONICLE_H
+#define ROYAL_CHRONICLE_H
+
+#include <string>
+#include <iostream>
+#include "binary_tree.h"
+
+using std::string;
+
+struct Knight {
+    string name;
+    int braveryScore;
+    string house;
+    int battlesWon;
+
+    bool operator<(const Knight& other) const {
+        return braveryScore < other.braveryScore;
+    }
+    bool operator>(const Knight& other) const {
+        return braveryScore > other.braveryScore;
+    }
+    bool operator==(const Knight& other) const {
+        return braveryScore == other.braveryScore;
+    }
+    friend std::ostream& operator<<(std::ostream& os, const Knight& k) {
+        os << k.name << " (" << k.braveryScore << ")";
+        return os;
+    }
+};
+
+class RoyalChronicle {
+private:
+    BinaryTree<Knight>* registry;
+    int N;
+    string houseQuery;
+    int L, R;
+    int K;
+    string nameLCA1, nameLCA2;
+    string banishName;
+
+    void clearRegistry(BinaryTree<Knight>* node);
+    void performTraversals();
+    void printHouseKnights(BinaryTree<Knight>* node, const string& house);
+    void printNewestRecruit();
+    void printChampion();
+    void task3_HouseAndExtremes();
+
+public:
+    RoyalChronicle();
+    ~RoyalChronicle();
+    void readInput(const string& filename);
+    void solve();
+};
+
+#endif
