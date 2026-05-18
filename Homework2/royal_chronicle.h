@@ -43,7 +43,13 @@ private:
     void printHouseKnights(BinaryTree<Knight>* node, const string& house);
     void printNewestRecruit();
     void printChampion();
-    void task3_HouseAndExtremes();
+    void houseAndExtremes();
+    int countLeaves(BinaryTree<Knight>* node);
+    void printLeaves(BinaryTree<Knight>* node, bool& isFirst);
+    bool isBalanced(BinaryTree<Knight>* node);
+    void archiveStructureReport();
+    void queryRange(BinaryTree<Knight>* node, int L, int R, int& totalBattles, bool& found);
+    void processRangeQuery();
 
 public:
     RoyalChronicle();
