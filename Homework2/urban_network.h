@@ -24,6 +24,13 @@ struct Robot {
     int maxRisk;
 };
 
+struct BestPath {
+    vector<int> path;
+    int time = INT_MAX;
+    int energy = INT_MAX;
+    int targetZone = -1;
+};
+
 class UrbanNetwork {
 private:
     Graph<int, Road>* g;
@@ -40,6 +47,9 @@ private:
     void findMostExposedArea();
     void checkNetworkValidity();
     void findBlockedAreas();
+    void findInaccessibleAreas();
+    void dfsRobotPath(int u, int currentEnergy, int currentTime, int maxRisk, int maxEnergy, vector<bool>& visited, vector<int>& currentPath, BestPath& best, const vector<bool>& isCritical);
+    void calculateRobotPaths();
 
 public:
     UrbanNetwork();

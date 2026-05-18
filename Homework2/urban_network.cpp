@@ -214,10 +214,133 @@ void UrbanNetwork::findBlockedAreas() {
     }
 }
 
+void UrbanNetwork::findInaccessibleAreas() {
+    if (areaToIndex.find(queryBase) == areaToIndex.end()) {
+        return;
+    }
+
+    int startNode = areaToIndex[queryBase];
+    vector<bool> visited(N, false);
+    vector<int> q;
+
+    q.push_back(startNode);
+    visited[startNode] = true;
+
+    int head = 0;
+    while (head < (int)q.size()) {
+        int u = q[head++];
+        Node<list_elem_info<Road>>* p = g->L[u].pfirst;
+        while (p != NULL) {
+            int v = p->info.node;
+            if (!visited[v]) {
+                visited[v] = true;
+                q.push_back(v);
+            }
+            p = p->next;
+        }
+    }
+
+    vector<string> inaccessible;
+    for (int i = 0; i < N; ++i) {
+        if (!visited[i]) {
+            inaccessible.push_back(indexToArea[i]);
+        }
+    }
+
+    if (inaccessible.empty()) {
+        cout << "From base " << queryBase << ", all areas are reachable.\n";
+    }
+    else {
+        cout << "Areas inaccessible from " << queryBase << ":\n";
+        for (size_t i = 0; i < inaccessible.size(); ++i) {
+            cout << inaccessible[i] << "\n";
+        }
+    }
+}
+
+void UrbanNetwork::dfsRobotPath(int u, int currentEnergy, int currentTime, int maxRisk, int maxEnergy,
+    vector<bool>& visited, vector<int>& currentPath, BestPath& best, const vector<bool>& isCritical) {
+    if (currentEnergy > maxEnergy) return;
+
+    if (isCritical[u]) {
+        if (currentTime < best.time || (currentTime == best.time && currentEnergy < best.energy)) {
+            best.time = currentTime;
+            best.energy = currentEnergy;
+            best.path = currentPath;
+            best.targetZone = u;
+        }
+    }
+
+    Node<list_elem_info<Road>>* p = g->L[u].pfirst;
+    while (p != NULL) {
+        int v = p->info.node;
+        Road r = p->info.edgeInfo;
+
+        if (!visited[v] && r.risk <= maxRisk && currentEnergy + r.energy <= maxEnergy) {
+            visited[v] = true;
+            currentPath.push_back(v);
+
+            dfsRobotPath(v, currentEnergy + r.energy, currentTime + r.time, maxRisk, maxEnergy,
+                visited, currentPath, best, isCritical);
+
+            currentPath.pop_back();
+            visited[v] = false;
+        }
+        p = p->next;
+    }
+}
+
+void UrbanNetwork::calculateRobotPaths() {
+    vector<bool> isCritical(N, false);
+    for (size_t i = 0; i < criticalZones.size(); ++i) {
+        if (areaToIndex.find(criticalZones[i]) != areaToIndex.end()) {
+            isCritical[areaToIndex[criticalZones[i]]] = true;
+        }
+    }
+
+    for (size_t i = 0; i < robots.size(); ++i) {
+        cout << "Robot " << i + 1 << ":\n";
+        cout << "Initial position: " << robots[i].start << "\n";
+        cout << "Autonomy: " << robots[i].autonomy << "\n";
+        cout << "Maximum accepted risk: " << robots[i].maxRisk << "\n";
+
+        if (areaToIndex.find(robots[i].start) == areaToIndex.end()) {
+            cout << "No valid direct path to a critical zone.\n";
+            continue;
+        }
+
+        int startNode = areaToIndex[robots[i].start];
+        BestPath best;
+        vector<bool> visited(N, false);
+        vector<int> currentPath;
+
+        visited[startNode] = true;
+        currentPath.push_back(startNode);
+
+        dfsRobotPath(startNode, 0, 0, robots[i].maxRisk, robots[i].autonomy, visited, currentPath, best, isCritical);
+
+        if (best.targetZone == -1) {
+            cout << "No valid direct path to a critical zone.\n";
+        }
+        else {
+            cout << "Optimal direct path to a critical zone:\n";
+            for (size_t j = 0; j < best.path.size(); ++j) {
+                cout << indexToArea[best.path[j]];
+                if (j < best.path.size() - 1) cout << " -> ";
+            }
+            cout << "\nTotal travel time: " << best.time << "\n";
+            cout << "Energy consumed: " << best.energy << "\n";
+            cout << "Critical zone reached: " << indexToArea[best.targetZone] << "\n";
+        }
+    }
+}
+
 void UrbanNetwork::solve() {
     mapNetwork();
     generateGraphviz();
     findMostExposedArea();
     checkNetworkValidity();
     findBlockedAreas();
+    findInaccessibleAreas();
+    calculateRobotPaths();
 }
