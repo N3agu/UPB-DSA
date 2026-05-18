@@ -306,6 +306,7 @@ void UrbanNetwork::calculateRobotPaths() {
 
         if (areaToIndex.find(robots[i].start) == areaToIndex.end()) {
             cout << "No valid direct path to a critical zone.\n";
+            cout << "No valid solution even with recharge.\n";
             continue;
         }
 
@@ -319,10 +320,7 @@ void UrbanNetwork::calculateRobotPaths() {
 
         dfsRobotPath(startNode, 0, 0, robots[i].maxRisk, robots[i].autonomy, visited, currentPath, best, isCritical);
 
-        if (best.targetZone == -1) {
-            cout << "No valid direct path to a critical zone.\n";
-        }
-        else {
+        if (best.targetZone != -1) {
             cout << "Optimal direct path to a critical zone:\n";
             for (size_t j = 0; j < best.path.size(); ++j) {
                 cout << indexToArea[best.path[j]];
@@ -331,6 +329,73 @@ void UrbanNetwork::calculateRobotPaths() {
             cout << "\nTotal travel time: " << best.time << "\n";
             cout << "Energy consumed: " << best.energy << "\n";
             cout << "Critical zone reached: " << indexToArea[best.targetZone] << "\n";
+        }
+        else {
+            cout << "No valid direct path to a critical zone.\n";
+
+            bool foundRecharge = false;
+            BestPath bestToStation;
+            BestPath bestToCritical;
+            int minTotalTime = 2e9;
+            int minTotalEnergy = 2e9;
+
+            for (size_t j = 0; j < chargingStations.size(); ++j) {
+                if (areaToIndex.find(chargingStations[j]) == areaToIndex.end()) continue;
+
+                int stationNode = areaToIndex[chargingStations[j]];
+                vector<bool> isThisStation(N, false);
+                isThisStation[stationNode] = true;
+
+                BestPath path1;
+                vector<bool> vis1(N, false);
+                vector<int> curr1;
+                vis1[startNode] = true;
+                curr1.push_back(startNode);
+
+                dfsRobotPath(startNode, 0, 0, robots[i].maxRisk, robots[i].autonomy, vis1, curr1, path1, isThisStation);
+
+                if (path1.targetZone != -1) {
+                    // station is reachable
+                    BestPath path2;
+                    vector<bool> vis2(N, false);
+                    vector<int> curr2;
+                    vis2[stationNode] = true;
+                    curr2.push_back(stationNode);
+
+                    // recharget so full autonomy back for path2
+                    dfsRobotPath(stationNode, 0, 0, robots[i].maxRisk, robots[i].autonomy, vis2, curr2, path2, isCritical);
+
+                    if (path2.targetZone != -1) {
+                        // critical zone is reachable from the station
+                        int totalTime = path1.time + path2.time;
+                        int totalEnergy = path1.energy + path2.energy;
+
+                        bool update = false;
+                        if (!foundRecharge) update = true;
+                        else if (totalTime < minTotalTime) update = true;
+                        else if (totalTime == minTotalTime && totalEnergy < minTotalEnergy) update = true;
+
+                        if (update) {
+                            foundRecharge = true;
+                            minTotalTime = totalTime;
+                            minTotalEnergy = totalEnergy;
+                            bestToStation = path1;
+                            bestToCritical = path2;
+                        }
+                    }
+                }
+            }
+
+            if (foundRecharge) {
+                cout << "Chosen charging station: " << indexToArea[bestToStation.targetZone] << "\n";
+                cout << "Critical zone reached after recharge: " << indexToArea[bestToCritical.targetZone] << "\n";
+                cout << "Total travel time: " << minTotalTime << "\n";
+                cout << "Energy consumed before recharge: " << bestToStation.energy << "\n";
+                cout << "Energy consumed after recharge: " << bestToCritical.energy << "\n";
+            }
+            else {
+                cout << "No valid solution even with recharge.\n";
+            }
         }
     }
 }
