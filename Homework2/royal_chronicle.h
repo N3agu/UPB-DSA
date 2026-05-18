@@ -50,6 +50,11 @@ private:
     void archiveStructureReport();
     void queryRange(BinaryTree<Knight>* node, int L, int R, int& totalBattles, bool& found);
     void processRangeQuery();
+    Knight* findByName(BinaryTree<Knight>* node, const string& name);
+    void findKthValorous(BinaryTree<Knight>* node, int& k, Knight*& result);
+    BinaryTree<Knight>* findLCA(BinaryTree<Knight>* node, int val1, int val2);
+    void politicalQueries();
+    void banishKnight();
 
 public:
     RoyalChronicle();

@@ -197,9 +197,108 @@ void RoyalChronicle::processRangeQuery() {
     }
 }
 
+Knight* RoyalChronicle::findByName(BinaryTree<Knight>* node, const string& name) {
+    if (node == NULL || node->pinfo == NULL) return NULL;
+    if (node->pinfo->name == name) return node->pinfo;
+
+    Knight* leftRes = findByName(node->left_son, name);
+    if (leftRes != NULL) return leftRes;
+
+    return findByName(node->right_son, name);
+}
+
+void RoyalChronicle::findKthValorous(BinaryTree<Knight>* node, int& k, Knight*& result) {
+    if (node == NULL || node->pinfo == NULL || k <= 0) return;
+
+    findKthValorous(node->right_son, k, result);
+
+    k--;
+    if (k == 0) {
+        result = node->pinfo;
+        return;
+    }
+
+    findKthValorous(node->left_son, k, result);
+}
+
+BinaryTree<Knight>* RoyalChronicle::findLCA(BinaryTree<Knight>* node, int val1, int val2) {
+    if (node == NULL || node->pinfo == NULL) return NULL;
+
+    int currentVal = node->pinfo->braveryScore;
+
+    if (currentVal < val1 && currentVal < val2) {
+        return findLCA(node->right_son, val1, val2);
+    }
+    if (currentVal > val1 && currentVal > val2) {
+        return findLCA(node->left_son, val1, val2);
+    }
+
+    return node;
+}
+
+void RoyalChronicle::politicalQueries() {
+    cout << "=== 6 ===\n";
+
+    int k_copy = K;
+    Knight* kthKnight = NULL;
+    findKthValorous(registry, k_copy, kthKnight);
+
+    if (kthKnight != NULL) {
+        string suffix = "th";
+        if (K % 10 == 1 && K % 100 != 11) suffix = "st";
+        else if (K % 10 == 2 && K % 100 != 12) suffix = "nd";
+        else if (K % 10 == 3 && K % 100 != 13) suffix = "rd";
+
+        cout << K << suffix << " most valorous knight: " << kthKnight->name
+            << " | bravery: " << kthKnight->braveryScore
+            << " | House " << kthKnight->house
+            << " | " << kthKnight->battlesWon << " battles\n";
+    }
+    else {
+        cout << "Rank " << K << " is out of bounds.\n";
+    }
+
+    Knight* k1 = findByName(registry, nameLCA1);
+    Knight* k2 = findByName(registry, nameLCA2);
+
+    if (k1 == NULL || k2 == NULL) {
+        cout << "One or both knights for LCA not found in the registry.\n";
+    }
+    else {
+        BinaryTree<Knight>* lcaNode = findLCA(registry, k1->braveryScore, k2->braveryScore);
+        if (lcaNode != NULL && lcaNode->pinfo != NULL) {
+            cout << "LCA of " << nameLCA1 << " and " << nameLCA2 << ":\n";
+            cout << lcaNode->pinfo->name << " | bravery: " << lcaNode->pinfo->braveryScore << "\n";
+        }
+    }
+}
+
+void RoyalChronicle::banishKnight() {
+    cout << "=== 7 ===\n";
+    Knight* kToBanish = findByName(registry, banishName);
+
+    if (kToBanish != NULL) {
+        cout << kToBanish->name << " (bravery: " << kToBanish->braveryScore << ") has been banished from the Registry.\n";
+
+        Knight aux;
+        aux.braveryScore = kToBanish->braveryScore;
+
+        registry->removeInfo(aux);
+
+        cout << "Registry after banishment (in-order):\n";
+        registry->inOrderTraversal();
+        cout << "\n";
+    }
+    else {
+        cout << "Knight " << banishName << " not found in the Registry.\n";
+    }
+}
+
 void RoyalChronicle::solve() {
     performTraversals();
     houseAndExtremes();
     archiveStructureReport();
     processRangeQuery();
+    politicalQueries();
+    banishKnight();
 }
